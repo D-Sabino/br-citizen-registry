@@ -1,7 +1,25 @@
-const CitizenSearchForm = () => {
+import { useState } from 'react';
+
+interface CitizenSearchFormProps {
+    onSearchCitizen: (searchTerm: string) => void;
+}
+
+const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!searchTerm.trim()) {
+            return;
+        }
+
+        onSearchCitizen(searchTerm);
+    };
+
     return (
         <div className="form-container sign-in">
-            <form>
+            <form onSubmit={handleSearch}>
                 <h1>Pesquisar Cidadão</h1>
 
                 <span>Informe o nome ou CPF para consultar o cadastro</span>
@@ -9,16 +27,14 @@ const CitizenSearchForm = () => {
                 <input
                     type="text"
                     placeholder="Nome ou CPF"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    required
                 />
 
-                <button type="button">
+                <button type="submit">
                     Pesquisar
                 </button>
-
-                <div className="result-card">
-                    <strong>Resultado</strong>
-                    <p>Cidadão não encontrado.</p>
-                </div>
             </form>
         </div>
     );
