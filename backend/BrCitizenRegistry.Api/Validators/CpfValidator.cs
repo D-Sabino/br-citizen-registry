@@ -7,6 +7,18 @@ public static class CpfValidator
         return new string(cpf.Where(char.IsDigit).ToArray());
     }
 
+    public static string Format(string cpf)
+    {
+        var cleanCpf = RemoveMask(cpf);
+
+        if (cleanCpf.Length != 11)
+        {
+            return cpf;
+        }
+
+        return $"{cleanCpf[..3]}.{cleanCpf.Substring(3, 3)}.{cleanCpf.Substring(6, 3)}-{cleanCpf[9..]}";
+    }
+
     public static bool IsValid(string cpf)
     {
         var cleanCpf = RemoveMask(cpf);
