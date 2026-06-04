@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Citizen } from '../../types/Citizen';
+import { formatCpf } from '../../utils/cpfUtils';
 
 interface CitizenRegisterFormProps {
     onRegisterCitizen: (citizen: Omit<Citizen, 'id'>) => void;
@@ -9,6 +10,10 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
     const [fullName, setFullName] = useState('');
     const [cpf, setCpf] = useState('');
 
+    const handleCpfChange = (value: string) => {
+        setCpf(formatCpf(value));
+    };
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -17,7 +22,7 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
         }
 
         onRegisterCitizen({
-            fullName,
+            fullName: fullName.trim(),
             cpf
         });
 
@@ -44,7 +49,8 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
                     type="text"
                     placeholder="CPF"
                     value={cpf}
-                    onChange={(event) => setCpf(event.target.value)}
+                    onChange={(event) => handleCpfChange(event.target.value)}
+                    maxLength={14}
                     required
                 />
 

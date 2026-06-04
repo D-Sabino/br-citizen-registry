@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { formatCpf } from '../../utils/cpfUtils';
 
 interface CitizenSearchFormProps {
     onSearchCitizen: (searchTerm: string) => void;
@@ -6,6 +7,17 @@ interface CitizenSearchFormProps {
 
 const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
     const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchTermChange = (value: string) => {
+        const hasLetters = /[a-zA-ZÀ-ÿ]/.test(value);
+
+        if (hasLetters) {
+            setSearchTerm(value);
+            return;
+        }
+
+        setSearchTerm(formatCpf(value));
+    };
 
     const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -28,7 +40,7 @@ const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
                     type="text"
                     placeholder="Nome ou CPF"
                     value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
+                    onChange={(event) => handleSearchTermChange(event.target.value)}
                     required
                 />
 

@@ -5,6 +5,7 @@ import FeedbackDialog from '../../components/FeedbackDialog';
 import TogglePanel from '../../components/TogglePanel';
 import type { Citizen } from '../../types/Citizen';
 import type { FeedbackMessage } from '../../types/FeedbackMessage';
+import { isValidCpf, removeCpfMask } from '../../utils/cpfUtils';
 
 const Home = () => {
     const [isRegisterActive, setIsRegisterActive] = useState(false);
@@ -32,6 +33,30 @@ const Home = () => {
     };
 
     const handleRegisterCitizen = (citizenData: Omit<Citizen, 'id'>) => {
+        if (!isValidCpf(citizenData.cpf)) {
+            setFeedbackMessage({
+                type: 'error',
+                title: 'CPF inválido',
+                description: 'Informe um CPF válido para realizar o cadastro.'
+            });
+
+            return;
+        }
+
+        const alreadyRegistered = citizens.some((citizen) => {
+            return removeCpfMask(citizen.cpf) === removeCpfMask(citizenData.cpf);
+        });
+
+        if (alreadyRegistered) {
+            setFeedbackMessage({
+                type: 'warning',
+                title: 'CPF já cadastrado',
+                description: 'Já existe um cidadão cadastrado com este CPF.'
+            });
+
+            return;
+        }
+
         const newCitizen: Citizen = {
             id: crypto.randomUUID(),
             fullName: citizenData.fullName,
@@ -50,11 +75,11 @@ const Home = () => {
 
     const handleSearchCitizen = (searchTerm: string) => {
         const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-        const normalizedSearchCpf = searchTerm.replace(/\D/g, '');
+        const normalizedSearchCpf = removeCpfMask(searchTerm);
 
         const foundCitizen = citizens.find((citizen) => {
             const normalizedName = citizen.fullName.toLowerCase();
-            const normalizedCpf = citizen.cpf.replace(/\D/g, '');
+            const normalizedCpf = removeCpfMask(citizen.cpf);
 
             return (
                 normalizedName.includes(normalizedSearchTerm) ||
