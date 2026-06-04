@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { formatCpf } from '../../utils/cpfUtils';
 
 interface CitizenSearchFormProps {
-    onSearchCitizen: (searchTerm: string) => void;
+    onSearchCitizen: (searchTerm: string) => Promise<void>;
+    isSearching: boolean;
 }
 
-const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
+const CitizenSearchForm = ({
+    onSearchCitizen,
+    isSearching
+}: CitizenSearchFormProps) => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleSearchTermChange = (value: string) => {
@@ -19,14 +23,14 @@ const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
         setSearchTerm(formatCpf(value));
     };
 
-    const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!searchTerm.trim()) {
             return;
         }
 
-        onSearchCitizen(searchTerm);
+        await onSearchCitizen(searchTerm);
     };
 
     return (
@@ -41,11 +45,12 @@ const CitizenSearchForm = ({ onSearchCitizen }: CitizenSearchFormProps) => {
                     placeholder="Nome ou CPF"
                     value={searchTerm}
                     onChange={(event) => handleSearchTermChange(event.target.value)}
+                    disabled={isSearching}
                     required
                 />
 
-                <button type="submit">
-                    Pesquisar
+                <button type="submit" disabled={isSearching}>
+                    {isSearching ? 'Pesquisando...' : 'Pesquisar'}
                 </button>
             </form>
         </div>

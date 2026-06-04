@@ -3,14 +3,16 @@ import CitizenRegisterForm from '../../components/CitizenRegisterForm';
 import CitizenSearchForm from '../../components/CitizenSearchForm';
 import FeedbackDialog from '../../components/FeedbackDialog';
 import TogglePanel from '../../components/TogglePanel';
+import { citizenService } from '../../services/citizenService';
 import type { Citizen } from '../../types/Citizen';
 import type { FeedbackMessage } from '../../types/FeedbackMessage';
-import { isValidCpf, removeCpfMask } from '../../utils/cpfUtils';
+import { isValidCpf } from '../../utils/cpfUtils';
 
 const Home = () => {
     const [isRegisterActive, setIsRegisterActive] = useState(false);
-    const [citizens, setCitizens] = useState<Citizen[]>([]);
     const [feedbackMessage, setFeedbackMessage] = useState<FeedbackMessage | null>(null);
+    const [isRegistering, setIsRegistering] = useState(false);
+    const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
         if (!feedbackMessage) {
@@ -32,7 +34,15 @@ const Home = () => {
         setIsRegisterActive(false);
     };
 
-    const handleRegisterCitizen = (citizenData: Omit<Citizen, 'id'>) => {
+    const getErrorMessage = (error: unknown): string => {
+        if (error instanceof Error) {
+            return error.message;
+        }
+
+        return 'Ocorreu um erro inesperado.';
+    };
+
+    const handleRegisterCitizen = async (citizenData: Omit<Citizen, 'id'>): Promise<boolean> => {
         if (!isValidCpf(citizenData.cpf)) {
             setFeedbackMessage({
                 type: 'error',
@@ -40,77 +50,76 @@ const Home = () => {
                 description: 'Informe um CPF válido para realizar o cadastro.'
             });
 
-            return;
+            return false;
         }
 
-        const alreadyRegistered = citizens.some((citizen) => {
-            return removeCpfMask(citizen.cpf) === removeCpfMask(citizenData.cpf);
-        });
+        try {
+            setIsRegistering(true);
 
-        if (alreadyRegistered) {
+            const newCitizen = await citizenService.create(citizenData);
+
             setFeedbackMessage({
-                type: 'warning',
-                title: 'CPF já cadastrado',
-                description: 'Já existe um cidadão cadastrado com este CPF.'
+                type: 'success',
+                title: 'Cadastro realizado com sucesso!',
+                description: `Nome: ${newCitizen.fullName}`,
+                details: `CPF: ${newCitizen.cpf}`
             });
 
-            return;
+            return true;
+        } catch (error) {
+            setFeedbackMessage({
+                type: 'error',
+                title: 'Não foi possível cadastrar',
+                description: getErrorMessage(error)
+            });
+
+            return false;
+        } finally {
+            setIsRegistering(false);
         }
-
-        const newCitizen: Citizen = {
-            id: crypto.randomUUID(),
-            fullName: citizenData.fullName,
-            cpf: citizenData.cpf
-        };
-
-        setCitizens((currentCitizens) => [...currentCitizens, newCitizen]);
-
-        setFeedbackMessage({
-            type: 'success',
-            title: 'Cadastro realizado com sucesso!',
-            description: `Nome: ${newCitizen.fullName}`,
-            details: `CPF: ${newCitizen.cpf}`
-        });
     };
 
-    const handleSearchCitizen = (searchTerm: string) => {
-        const normalizedSearchTerm = searchTerm.trim().toLowerCase();
-        const normalizedSearchCpf = removeCpfMask(searchTerm);
+    const handleSearchCitizen = async (searchTerm: string): Promise<void> => {
+        try {
+            setIsSearching(true);
 
-        const foundCitizen = citizens.find((citizen) => {
-            const normalizedName = citizen.fullName.toLowerCase();
-            const normalizedCpf = removeCpfMask(citizen.cpf);
+            const foundCitizen = await citizenService.search(searchTerm);
 
-            return (
-                normalizedName.includes(normalizedSearchTerm) ||
-                normalizedCpf === normalizedSearchCpf
-            );
-        });
-
-        if (!foundCitizen) {
             setFeedbackMessage({
-                type: 'warning',
-                title: 'Cidadão não encontrado',
-                description: 'Nenhum cadastro foi localizado com os dados informados.'
+                type: 'success',
+                title: 'Cidadão encontrado',
+                description: `Nome: ${foundCitizen.fullName}`,
+                details: `CPF: ${foundCitizen.cpf}`
             });
+        } catch (error) {
+            const errorMessage = getErrorMessage(error);
 
-            return;
+            setFeedbackMessage({
+                type: errorMessage === 'Cidadão não encontrado' ? 'warning' : 'error',
+                title: errorMessage === 'Cidadão não encontrado'
+                    ? 'Cidadão não encontrado'
+                    : 'Não foi possível pesquisar',
+                description: errorMessage === 'Cidadão não encontrado'
+                    ? 'Nenhum cadastro foi localizado com os dados informados.'
+                    : errorMessage
+            });
+        } finally {
+            setIsSearching(false);
         }
-
-        setFeedbackMessage({
-            type: 'success',
-            title: 'Cidadão encontrado',
-            description: `Nome: ${foundCitizen.fullName}`,
-            details: `CPF: ${foundCitizen.cpf}`
-        });
     };
 
     return (
         <main className="page-container">
             <section className={`container ${isRegisterActive ? 'active' : ''}`}>
-                <CitizenSearchForm onSearchCitizen={handleSearchCitizen} />
+                <CitizenSearchForm
+                    onSearchCitizen={handleSearchCitizen}
+                    isSearching={isSearching}
+                />
 
-                <CitizenRegisterForm onRegisterCitizen={handleRegisterCitizen} />
+                <CitizenRegisterForm
+                    onRegisterCitizen={handleRegisterCitizen}
+                    isRegistering={isRegistering}
+                />
 
                 <TogglePanel
                     onShowRegister={showRegister}

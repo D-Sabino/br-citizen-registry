@@ -3,10 +3,14 @@ import type { Citizen } from '../../types/Citizen';
 import { formatCpf } from '../../utils/cpfUtils';
 
 interface CitizenRegisterFormProps {
-    onRegisterCitizen: (citizen: Omit<Citizen, 'id'>) => void;
+    onRegisterCitizen: (citizen: Omit<Citizen, 'id'>) => Promise<boolean>;
+    isRegistering: boolean;
 }
 
-const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) => {
+const CitizenRegisterForm = ({
+    onRegisterCitizen,
+    isRegistering
+}: CitizenRegisterFormProps) => {
     const [fullName, setFullName] = useState('');
     const [cpf, setCpf] = useState('');
 
@@ -14,20 +18,22 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
         setCpf(formatCpf(value));
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!fullName.trim() || !cpf.trim()) {
             return;
         }
 
-        onRegisterCitizen({
+        const wasRegistered = await onRegisterCitizen({
             fullName: fullName.trim(),
             cpf
         });
 
-        setFullName('');
-        setCpf('');
+        if (wasRegistered) {
+            setFullName('');
+            setCpf('');
+        }
     };
 
     return (
@@ -42,6 +48,7 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
                     placeholder="Nome completo"
                     value={fullName}
                     onChange={(event) => setFullName(event.target.value)}
+                    disabled={isRegistering}
                     required
                 />
 
@@ -51,11 +58,12 @@ const CitizenRegisterForm = ({ onRegisterCitizen }: CitizenRegisterFormProps) =>
                     value={cpf}
                     onChange={(event) => handleCpfChange(event.target.value)}
                     maxLength={14}
+                    disabled={isRegistering}
                     required
                 />
 
-                <button type="submit">
-                    Cadastrar
+                <button type="submit" disabled={isRegistering}>
+                    {isRegistering ? 'Cadastrando...' : 'Cadastrar'}
                 </button>
             </form>
         </div>

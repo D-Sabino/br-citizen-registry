@@ -299,3 +299,13 @@ body {
         transform: translateY(0) scale(1);
     }
 }
+
+.container button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.container input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
