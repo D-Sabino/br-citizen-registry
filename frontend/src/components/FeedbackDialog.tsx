@@ -1,4 +1,4 @@
-import type { FeedbackMessage } from '../../types/FeedbackMessage';
+import type { FeedbackMessage } from '../types/FeedbackMessage';
 
 interface FeedbackDialogProps {
     message: FeedbackMessage | null;
@@ -28,7 +28,7 @@ const FeedbackDialog = ({ message, onClose }: FeedbackDialogProps) => {
 
                 {Array.isArray(message.details) && (
                     <div className="feedback-list">
-                        {message.details.map((detail) => (
+                        {message.details.map((detail: string) => (
                             <p key={detail}>{detail}</p>
                         ))}
                     </div>

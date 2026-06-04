@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import CitizenRegisterForm from '../../components/CitizenRegisterForm';
-import CitizenSearchForm from '../../components/CitizenSearchForm';
-import FeedbackDialog from '../../components/FeedbackDialog';
-import TogglePanel from '../../components/TogglePanel';
-import { citizenService } from '../../services/citizenService';
-import type { Citizen } from '../../types/Citizen';
-import type { FeedbackMessage } from '../../types/FeedbackMessage';
-import { isValidCpf } from '../../utils/cpfUtils';
+import CitizenRegisterForm from '../components/CitizenRegisterForm';
+import CitizenSearchForm from '../components/CitizenSearchForm';
+import FeedbackDialog from '../components/FeedbackDialog';
+import TogglePanel from '../components/TogglePanel';
+import { citizenService } from '../services/citizenService';
+import type { Citizen } from '../types/Citizen';
+import type { FeedbackMessage } from '../types/FeedbackMessage';
+import { isValidCpf } from '../utils/cpfUtils';
 
 const Home = () => {
     const [isRegisterActive, setIsRegisterActive] = useState(false);

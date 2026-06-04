@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { formatCpf } from '../../utils/cpfUtils';
+import { formatCpf } from '../utils/cpfUtils';
 
 interface CitizenSearchFormProps {
     onSearchCitizen: (searchTerm: string) => Promise<void>;

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Citizen } from '../../types/Citizen';
-import { formatCpf } from '../../utils/cpfUtils';
+import type { Citizen } from '../types/Citizen';
+import { formatCpf } from '../utils/cpfUtils';
 
 interface CitizenRegisterFormProps {
     onRegisterCitizen: (citizen: Omit<Citizen, 'id'>) => Promise<boolean>;
