@@ -1,0 +1,6 @@
+@BrCitizenRegistry.Api_HostAddress = http://localhost:5125
+
+GET {{BrCitizenRegistry.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
