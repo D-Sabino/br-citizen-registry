@@ -21,7 +21,7 @@ const Home = () => {
 
         const timer = setTimeout(() => {
             setFeedbackMessage(null);
-        }, 5000);
+        }, 30000);
 
         return () => clearTimeout(timer);
     }, [feedbackMessage]);
@@ -83,13 +83,17 @@ const Home = () => {
         try {
             setIsSearching(true);
 
-            const foundCitizen = await citizenService.search(searchTerm);
+            const foundCitizens = await citizenService.search(searchTerm);
 
             setFeedbackMessage({
                 type: 'success',
-                title: 'Cidadão encontrado',
-                description: `Nome: ${foundCitizen.fullName}`,
-                details: `CPF: ${foundCitizen.cpf}`
+                title: foundCitizens.length === 1
+                    ? 'Cidadão encontrado'
+                    : `${foundCitizens.length} cidadãos encontrados`,
+                description: 'Resultado da pesquisa:',
+                details: foundCitizens.map((citizen) => {
+                    return `Nome: ${citizen.fullName}\nCPF: ${citizen.cpf}`;
+                })
             });
         } catch (error) {
             const errorMessage = getErrorMessage(error);

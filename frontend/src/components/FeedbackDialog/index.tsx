@@ -26,7 +26,15 @@ const FeedbackDialog = ({ message, onClose }: FeedbackDialogProps) => {
 
                 <p>{message.description}</p>
 
-                {message.details && (
+                {Array.isArray(message.details) && (
+                    <div className="feedback-list">
+                        {message.details.map((detail) => (
+                            <p key={detail}>{detail}</p>
+                        ))}
+                    </div>
+                )}
+
+                {typeof message.details === 'string' && (
                     <p>{message.details}</p>
                 )}
             </div>

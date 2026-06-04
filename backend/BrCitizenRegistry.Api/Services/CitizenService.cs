@@ -43,13 +43,13 @@ public class CitizenService : ICitizenService
         return MapToResponse(citizen);
     }
 
-    public async Task<CitizenResponse?> SearchAsync(string term)
+    public async Task<List<CitizenResponse>> SearchAsync(string term)
     {
         var cleanTerm = term.Trim();
 
         if (string.IsNullOrWhiteSpace(cleanTerm))
         {
-            return null;
+            return [];
         }
 
         var searchTerm = CpfValidator.RemoveMask(cleanTerm);
@@ -59,14 +59,11 @@ public class CitizenService : ICitizenService
             searchTerm = cleanTerm;
         }
 
-        var citizen = await _citizenRepository.SearchAsync(searchTerm);
+        var citizens = await _citizenRepository.SearchAsync(searchTerm);
 
-        if (citizen is null)
-        {
-            return null;
-        }
-
-        return MapToResponse(citizen);
+        return citizens
+            .Select(MapToResponse)
+            .ToList();
     }
 
     private static CitizenResponse MapToResponse(Citizen citizen)

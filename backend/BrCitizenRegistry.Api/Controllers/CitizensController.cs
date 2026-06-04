@@ -34,7 +34,7 @@ public class CitizensController : ControllerBase
     }
 
     [HttpGet("search")]
-    public async Task<ActionResult<CitizenResponse>> SearchAsync([FromQuery] string term)
+    public async Task<ActionResult<List<CitizenResponse>>> SearchAsync([FromQuery] string term)
     {
         if (string.IsNullOrWhiteSpace(term))
         {
@@ -44,9 +44,9 @@ public class CitizensController : ControllerBase
             });
         }
 
-        var citizen = await _citizenService.SearchAsync(term);
+        var citizens = await _citizenService.SearchAsync(term);
 
-        if (citizen is null)
+        if (citizens.Count == 0)
         {
             return NotFound(new
             {
@@ -54,6 +54,6 @@ public class CitizensController : ControllerBase
             });
         }
 
-        return Ok(citizen);
+        return Ok(citizens);
     }
 }

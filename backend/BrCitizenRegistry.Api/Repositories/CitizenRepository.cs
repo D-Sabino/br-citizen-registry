@@ -31,11 +31,13 @@ public class CitizenRepository : ICitizenRepository
             .FirstOrDefaultAsync(citizen => citizen.Cpf == cpf);
     }
 
-    public async Task<Citizen?> SearchAsync(string term)
+    public async Task<List<Citizen>> SearchAsync(string term)
     {
         return await _context.Citizens
-            .FirstOrDefaultAsync(citizen =>
+            .Where(citizen =>
                 citizen.Cpf == term ||
-                EF.Functions.Like(citizen.FullName, $"%{term}%"));
+                EF.Functions.Like(citizen.FullName, $"%{term}%"))
+            .OrderBy(citizen => citizen.FullName)
+            .ToListAsync();
     }
 }

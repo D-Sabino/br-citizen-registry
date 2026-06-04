@@ -48,13 +48,13 @@ export const citizenService = {
         return handleResponse<Citizen>(response);
     },
 
-    search: async (term: string): Promise<Citizen> => {
+    search: async (term: string): Promise<Citizen[]> => {
         const queryParams = new URLSearchParams({
             term
         });
 
         const response = await fetch(`${API_BASE_URL}/Citizens/search?${queryParams.toString()}`);
 
-        return handleResponse<Citizen>(response);
+        return handleResponse<Citizen[]>(response);
     }
 };
