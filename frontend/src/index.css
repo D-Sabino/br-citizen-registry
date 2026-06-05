@@ -243,6 +243,8 @@ body {
 .feedback-card {
     position: relative;
     width: min(420px, calc(100% - 48px));
+    max-height: min(80vh, 620px);
+    overflow-y: auto;
     background-color: #fff;
     border-left: 5px solid #e8d7a5;
     border-radius: 16px;
@@ -298,6 +300,9 @@ body {
 
 .feedback-list {
     margin-top: 8px;
+    max-height: 45vh;
+    overflow-y: auto;
+    padding-right: 6px;
 }
 
 .feedback-list p {

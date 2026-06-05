@@ -1,3 +1,4 @@
+using BrCitizenRegistry.Application.Validators;
 using BrCitizenRegistry.Application.DTOs;
 using BrCitizenRegistry.Application.Ports.In;
 using BrCitizenRegistry.Application.Ports.Out;
@@ -19,6 +20,11 @@ public class CitizenUseCase : ICitizenUseCase
     {
         var fullName = request.FullName.Trim();
         var cleanCpf = CpfValidator.RemoveMask(request.Cpf);
+
+        if (!CitizenInputValidator.IsValidFullName(fullName))
+        {
+            throw new InvalidOperationException("O nome completo contém caracteres inválidos.");
+        }
 
         if (string.IsNullOrWhiteSpace(fullName))
         {
@@ -51,6 +57,11 @@ public class CitizenUseCase : ICitizenUseCase
         if (string.IsNullOrWhiteSpace(cleanTerm))
         {
             return [];
+        }
+
+        if (!CitizenInputValidator.IsValidSearchTerm(cleanTerm))
+        {
+            throw new InvalidOperationException("O termo de pesquisa contém caracteres inválidos.");
         }
 
         var searchTerm = CpfValidator.RemoveMask(cleanTerm);

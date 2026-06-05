@@ -34,11 +34,21 @@ public class MySqlCitizenRepository : ICitizenRepository
 
     public async Task<List<Citizen>> SearchAsync(string term)
     {
+        var escapedTerm = EscapeLikePattern(term);
+
         return await _context.Citizens
             .Where(citizen =>
                 citizen.Cpf == term ||
-                EF.Functions.Like(citizen.FullName, $"%{term}%"))
+                EF.Functions.Like(citizen.FullName, $"%{escapedTerm}%", "\\"))
             .OrderBy(citizen => citizen.FullName)
             .ToListAsync();
+    }
+
+    private static string EscapeLikePattern(string value)
+    {
+        return value
+            .Replace("\\", "\\\\")
+            .Replace("%", "\\%")
+            .Replace("_", "\\_");
     }
 }

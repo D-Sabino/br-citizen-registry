@@ -48,6 +48,7 @@ const CitizenRegisterForm = ({
                     placeholder="Nome completo"
                     value={fullName}
                     onChange={(event) => setFullName(event.target.value)}
+                    maxLength={150}
                     disabled={isRegistering}
                     required
                 />

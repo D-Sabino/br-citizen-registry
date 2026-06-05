@@ -146,4 +146,43 @@ public class CitizenUseCaseTests
 
         result.Should().BeEmpty();
     }
+
+    [Theory]
+    [InlineData("<script>alert(1)</script>")]
+    [InlineData("João; DROP TABLE citizens;")]
+    [InlineData("' OR 1=1")]
+    public async Task CreateAsync_ShouldThrowException_WhenFullNameContainsInvalidCharacters(string fullName)
+    {
+        var request = new CreateCitizenRequest
+        {
+            FullName = fullName,
+            Cpf = "529.982.247-25"
+        };
+
+        var action = async () => await _citizenUseCase.CreateAsync(request);
+
+        await action
+            .Should()
+            .ThrowAsync<InvalidOperationException>()
+            .WithMessage("O nome completo contém caracteres inválidos.");
+
+        await _citizenRepository
+            .DidNotReceive()
+            .AddAsync(Arg.Any<Citizen>());
+    }
+
+    [Theory]
+    [InlineData("<script>alert(1)</script>")]
+    [InlineData("' OR 1=1")]
+    [InlineData("%")]
+    [InlineData("_")]
+    public async Task SearchAsync_ShouldThrowException_WhenSearchTermContainsInvalidCharacters(string term)
+    {
+        var action = async () => await _citizenUseCase.SearchAsync(term);
+
+        await action
+            .Should()
+            .ThrowAsync<InvalidOperationException>()
+            .WithMessage("O termo de pesquisa contém caracteres inválidos.");
+    }
 }

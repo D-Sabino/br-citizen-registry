@@ -44,16 +44,26 @@ public class CitizensController : ControllerBase
             });
         }
 
-        var citizens = await _citizenUseCase.SearchAsync(term);
-
-        if (citizens.Count == 0)
+        try
         {
-            return NotFound(new
+            var citizens = await _citizenUseCase.SearchAsync(term);
+
+            if (citizens.Count == 0)
             {
-                message = "Cidadão não encontrado"
+                return NotFound(new
+                {
+                    message = "Cidadão não encontrado"
+                });
+            }
+
+            return Ok(citizens);
+        }
+        catch (InvalidOperationException exception)
+        {
+            return BadRequest(new
+            {
+                message = exception.Message
             });
         }
-
-        return Ok(citizens);
     }
 }
