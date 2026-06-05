@@ -45,6 +45,7 @@ const CitizenSearchForm = ({
                     placeholder="Nome ou CPF"
                     value={searchTerm}
                     onChange={(event) => handleSearchTermChange(event.target.value)}
+                    maxLength={150}
                     disabled={isSearching}
                     required
                 />
