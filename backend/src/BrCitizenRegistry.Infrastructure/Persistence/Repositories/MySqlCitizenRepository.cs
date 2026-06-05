@@ -1,14 +1,15 @@
-using BrCitizenRegistry.Api.Data;
-using BrCitizenRegistry.Api.Models;
+using BrCitizenRegistry.Application.Ports.Out;
+using BrCitizenRegistry.Domain.Entities;
+using BrCitizenRegistry.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace BrCitizenRegistry.Api.Repositories;
+namespace BrCitizenRegistry.Infrastructure.Persistence.Repositories;
 
-public class CitizenRepository : ICitizenRepository
+public class MySqlCitizenRepository : ICitizenRepository
 {
     private readonly AppDbContext _context;
 
-    public CitizenRepository(AppDbContext context)
+    public MySqlCitizenRepository(AppDbContext context)
     {
         _context = context;
     }

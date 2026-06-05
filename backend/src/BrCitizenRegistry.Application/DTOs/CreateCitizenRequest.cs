@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BrCitizenRegistry.Api.DTOs;
+namespace BrCitizenRegistry.Application.DTOs;
 
 public class CreateCitizenRequest
 {

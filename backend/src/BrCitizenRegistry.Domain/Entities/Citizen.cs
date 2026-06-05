@@ -1,4 +1,4 @@
-namespace BrCitizenRegistry.Api.Models;
+namespace BrCitizenRegistry.Domain.Entities;
 
 public class Citizen
 {

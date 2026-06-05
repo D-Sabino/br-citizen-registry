@@ -15,4 +15,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\src\BrCitizenRegistry.Domain\BrCitizenRegistry.Domain.csproj" />
+    <ProjectReference Include="..\src\BrCitizenRegistry.Application\BrCitizenRegistry.Application.csproj" />
+    <ProjectReference Include="..\src\BrCitizenRegistry.Infrastructure\BrCitizenRegistry.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

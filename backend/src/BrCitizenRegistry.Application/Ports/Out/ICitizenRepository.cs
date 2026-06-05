@@ -1,6 +1,6 @@
-using BrCitizenRegistry.Api.Models;
+using BrCitizenRegistry.Domain.Entities;
 
-namespace BrCitizenRegistry.Api.Repositories;
+namespace BrCitizenRegistry.Application.Ports.Out;
 
 public interface ICitizenRepository
 {

@@ -1,15 +1,16 @@
-using BrCitizenRegistry.Api.DTOs;
-using BrCitizenRegistry.Api.Models;
-using BrCitizenRegistry.Api.Repositories;
-using BrCitizenRegistry.Api.Validators;
+using BrCitizenRegistry.Application.DTOs;
+using BrCitizenRegistry.Application.Ports.In;
+using BrCitizenRegistry.Application.Ports.Out;
+using BrCitizenRegistry.Domain.Entities;
+using BrCitizenRegistry.Domain.ValueObjects;
 
-namespace BrCitizenRegistry.Api.Services;
+namespace BrCitizenRegistry.Application.UseCases;
 
-public class CitizenService : ICitizenService
+public class CitizenUseCase : ICitizenUseCase
 {
     private readonly ICitizenRepository _citizenRepository;
 
-    public CitizenService(ICitizenRepository citizenRepository)
+    public CitizenUseCase(ICitizenRepository citizenRepository)
     {
         _citizenRepository = citizenRepository;
     }

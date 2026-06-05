@@ -1,7 +1,7 @@
-using BrCitizenRegistry.Api.Models;
+using BrCitizenRegistry.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace BrCitizenRegistry.Api.Data;
+namespace BrCitizenRegistry.Infrastructure.Persistence;
 
 public class AppDbContext : DbContext
 {

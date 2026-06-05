@@ -1,4 +1,4 @@
-namespace BrCitizenRegistry.Api.DTOs;
+namespace BrCitizenRegistry.Application.DTOs;
 
 public class CitizenResponse
 {

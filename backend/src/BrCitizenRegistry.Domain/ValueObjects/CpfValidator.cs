@@ -1,4 +1,4 @@
-namespace BrCitizenRegistry.Api.Validators;
+namespace BrCitizenRegistry.Domain.ValueObjects;
 
 public static class CpfValidator
 {

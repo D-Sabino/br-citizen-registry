@@ -1,6 +1,8 @@
-using BrCitizenRegistry.Api.Data;
-using BrCitizenRegistry.Api.Repositories;
-using BrCitizenRegistry.Api.Services;
+using BrCitizenRegistry.Application.Ports.In;
+using BrCitizenRegistry.Application.Ports.Out;
+using BrCitizenRegistry.Application.UseCases;
+using BrCitizenRegistry.Infrastructure.Persistence;
+using BrCitizenRegistry.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,12 +20,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(
         connectionString,
-        ServerVersion.AutoDetect(connectionString)
+        ServerVersion.AutoDetect(connectionString),
+        mySqlOptions =>
+        {
+            mySqlOptions.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName);
+        }
     );
 });
 
-builder.Services.AddScoped<ICitizenRepository, CitizenRepository>();
-builder.Services.AddScoped<ICitizenService, CitizenService>();
+builder.Services.AddScoped<ICitizenRepository, MySqlCitizenRepository>();
+builder.Services.AddScoped<ICitizenUseCase, CitizenUseCase>();
 
 builder.Services.AddCors(options =>
 {

@@ -1,5 +1,5 @@
-using BrCitizenRegistry.Api.DTOs;
-using BrCitizenRegistry.Api.Services;
+using BrCitizenRegistry.Application.DTOs;
+using BrCitizenRegistry.Application.Ports.In;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrCitizenRegistry.Api.Controllers;
@@ -8,11 +8,11 @@ namespace BrCitizenRegistry.Api.Controllers;
 [Route("api/[controller]")]
 public class CitizensController : ControllerBase
 {
-    private readonly ICitizenService _citizenService;
+    private readonly ICitizenUseCase _citizenUseCase;
 
-    public CitizensController(ICitizenService citizenService)
+    public CitizensController(ICitizenUseCase citizenUseCase)
     {
-        _citizenService = citizenService;
+        _citizenUseCase = citizenUseCase;
     }
 
     [HttpPost]
@@ -20,7 +20,7 @@ public class CitizensController : ControllerBase
     {
         try
         {
-            var citizen = await _citizenService.CreateAsync(request);
+            var citizen = await _citizenUseCase.CreateAsync(request);
 
             return Created(string.Empty, citizen);
         }
@@ -44,7 +44,7 @@ public class CitizensController : ControllerBase
             });
         }
 
-        var citizens = await _citizenService.SearchAsync(term);
+        var citizens = await _citizenUseCase.SearchAsync(term);
 
         if (citizens.Count == 0)
         {
